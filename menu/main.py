@@ -1,4 +1,6 @@
-import util
+from menu import validations
+from user_input import user_input
+from validator import Validator
 
 
 class FunctionItem:
@@ -56,7 +58,7 @@ class Menu:
             self.max_str_len = len(self.menu_heading)
 
     def print_heading(self):
-        m1_len = self.max_str_len / 2 - (len(self.menu_heading) / 2)
+        m1_len = int(self.max_str_len / 2 - (len(self.menu_heading) / 2))
         m1 = ' ' * m1_len
         m2_len = self.max_str_len - len(self.margin + m1 + self.menu_heading) + self.margin_len
         m2 = ' ' * m2_len
@@ -88,11 +90,11 @@ class Menu:
         while True and not self.stop:
             self.print_heading()
             self.print_menu_list()
-            inp = util.validated_user_input(
+            inp = user_input(
                 label='Please Select [%s]: ' % str(self.default),
                 validators=[
-                    util.Validator(util.is_number),
-                    util.Validator(util.number_in_range, (0, len(self.items)))
+                    Validator(validations.is_number),
+                    Validator(validations.number_in_range, (0, len(self.items)))
                 ])
 
             sel = int(inp) if inp else self.default
@@ -123,16 +125,3 @@ class Menu:
 
     def get_max_label_length(self):
         return max(len(i.label) for i in self.items)
-
-
-def main():
-    menu_items = [FunctionItem('Exit', exit, ['Terminating script']),
-                  ValueItem('a', 'qs'),
-                  ValueItem('P', 'prod')]
-    m = Menu(menu_items, 1)
-    m.select()
-    print(m.run_or_return())
-
-
-if __name__ == '__main__':
-    main()
